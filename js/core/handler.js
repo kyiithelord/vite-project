@@ -1,7 +1,9 @@
 import { createItem } from "./product";
 import { addRecord, calculateRecordCostTotal, updateRecord } from "./record";
-import { productSelect, recordForm, totalCost } from "./selector";
+import { myInventory, productSelect, recordForm, totalCost } from "./selector";
 import { products } from "./variaes";
+import * as bootstrap from "bootstrap"
+
 
 export const recordFormHandler=(event) => {
     event.preventDefault();
@@ -21,7 +23,6 @@ export const recordFormHandler=(event) => {
 
   }
   recordForm.reset();
-  calculateRecordCostTotal();
 
 };
 
@@ -53,3 +54,13 @@ export const printerHandler=() => {
   
   
 };
+
+export const inventoryBtnHandler=() => {
+  const myInventoryOffcanvas = new bootstrap.Offcanvas(myInventory,{
+    backdrop:"static"
+  });
+  myInventoryOffcanvas.show();
+  myInventory.addEventListener("hide.bs.offcanvas",() => {
+    console.log("u close inventory");
+  })
+}

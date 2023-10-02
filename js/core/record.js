@@ -1,4 +1,6 @@
-import { totalCost } from "./selector";
+import Swal from "sweetalert2";
+import Toastify from  "toastify-js"
+import { records, totalCost } from "./selector";
 
 export const createRecord = (product, quantity) => {
   const tr = document.createElement("tr");
@@ -8,17 +10,45 @@ export const createRecord = (product, quantity) => {
   tr.innerHTML = ` 
     <td class='row-num'></td>
     <td>${product.name}</td>
-    <td class="text-end row-control">${product.price}</td>
+    <td class="text-end ">${product.price}</td>
     <td class="text-end row-quantity-control"><i class="bi bi-dash row-quantity-decrement"></i><span class=" row-quantity">${quantity}</span><i class="bi bi-plus row-quantity-increment"></i></td>
-    <td class="text-end "><span class="row-cost">${cost}</span><button class="btn btn-sm btn-primary row-delete"> <i class="bi bi-trash3"></i> </button> </td>`;
+    <td class="text-end row-control "><span class="row-cost">${cost}</span><button class="btn btn-sm btn-primary row-delete"> <i class="bi bi-trash3"></i> </button> </td>`;
 
   const deleteRecord = () => {
-    console.log(tr);
+    // console.log(tr);
 
-    if (confirm("Are Your Sure To Delete ?")) {
-      tr.remove();
-      calculateRecordCostTotal();
-    }
+    // if (confirm("Are Your Sure To Delete ?")) {
+    //   tr.remove();
+    // }
+
+    Swal.fire({
+      title:"Are U Sure?",
+      text:"It will permanent delete.",
+      icon:"question",
+      showCancelButton:true,
+      confirmButtonColor:"#333",
+      cancelButtonColor:"gray",
+      confirmButtonText:"Yes delete it!"
+    }).then((result) => {
+      if(result.isConfirmed){
+        tr.remove()
+        Toastify({
+          text:"List deleted.",
+          duration: 3000,
+        }).showToast();
+        // Swal.fire(
+        //   "Delete!",
+        //   "Your list has been deleted",
+        //   "success"
+
+        // )
+
+
+
+        
+      }
+      
+    })
   };
 
   const rowDelete = tr.querySelector(".row-delete");
@@ -53,7 +83,6 @@ export const updateRecord = ({ id, price }, quantity) => {
     parseFloat(currentRowQuantity.innerText) + parseFloat(quantity);
   currentRowCost.innerText = currentRowQuantity.innerText * price;
 
-  calculateRecordCostTotal();
 };
 
 export const calculateRecordCostTotal = () => {
@@ -62,3 +91,17 @@ export const calculateRecordCostTotal = () => {
     0
   );
 };
+
+export const recordObserver=() => {
+  console.log("record observer start");
+
+  const observerOptions = {
+    childList: true,
+    subtree: true,
+  };
+  
+  const observer = new MutationObserver(() => {
+    calculateRecordCostTotal();
+  });
+  observer.observe(records, observerOptions);
+}
